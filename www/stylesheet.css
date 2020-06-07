@@ -24,3 +24,11 @@
     right: 30px;
     top: 20px;
 }
+#logo{
+  color:blue;
+}
+#panelTitle{
+  text-align:center;
+  font-weight: bold;
+  font-size:18px;
+}
