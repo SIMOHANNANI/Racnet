@@ -1,0 +1,12 @@
+name: racnet
+title: racnet
+username:
+account: racnet
+server: shinyapps.io
+hostUrl: https://api.shinyapps.io/v1
+appId: 2421619
+bundleId: 3239327
+url: https://racnet.shinyapps.io/racnet/
+when: 1591559247.49513
+asMultiple: FALSE
+asStatic: FALSE

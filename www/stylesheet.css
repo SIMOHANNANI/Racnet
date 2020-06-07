@@ -1,0 +1,26 @@
+.navbar-static-top,.row{
+  margin:20px 20px;
+}
+
+
+.nav-tabs {
+  background-color: #fcfbc7;
+  border-width:2px 2px 0 2px;
+  border-style:solid;
+  border-radius:5px
+}
+
+.tabbable .tab-content {
+  border-bottom:3px solid black;
+  border-left:3px solid black;
+  border-right:3px solid black;
+  border-top:3px solid black;
+  border-radius:5px
+}
+#github{
+    height:33px;
+    cursor:pointer;
+    position: absolute;
+    right: 30px;
+    top: 20px;
+}
