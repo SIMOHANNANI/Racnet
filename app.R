@@ -21,7 +21,7 @@ ui <- fluidPage(
   bootstrap(), 
   tags$div(class="container"),
   ## Logo for my website :
-  navbarPage(title = tagList(img(src="img/github.png",height="45px"),),
+  navbarPage(title = tagList(a(img(src="img/logo.jpeg",height="50px"),target="_Blank",href="https://racnet.shinyapps.io/racnet/"),),
              
              tabPanel("Home",icon = icon("home","fa-2x"),),
              tabPanel("About",icon = icon("address-card","fa-2x")),
