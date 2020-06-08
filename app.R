@@ -81,33 +81,6 @@ server <- function(input, output){
 }
 shinyApp(ui = ui, server = server)
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 # library(shinydashboard)
 # # user interface :
 # 
@@ -205,32 +178,3 @@ shinyApp(ui = ui, server = server)
 # }
 # # running the app :
 # shinyApp(ui,server)
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
