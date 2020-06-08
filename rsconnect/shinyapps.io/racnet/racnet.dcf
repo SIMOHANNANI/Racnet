@@ -5,8 +5,8 @@ account: racnet
 server: shinyapps.io
 hostUrl: https://api.shinyapps.io/v1
 appId: 2421619
-bundleId: 3239709
+bundleId: 3244149
 url: https://racnet.shinyapps.io/racnet/
-when: 1591566388.26153
+when: 1591646214.29705
 asMultiple: FALSE
 asStatic: FALSE

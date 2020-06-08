@@ -1,4 +1,5 @@
 library(shiny)
+library(arulesViz,warn.conflicts = FALSE)
 library(bootstraplib)
 bs_theme_new(bootswatch = "sketchy")
 # define the UI :
@@ -27,19 +28,24 @@ ui <- fluidPage(
                div(
                  id = "img-id",
                  a(img(id = "github",src = "img/github.png") ,target="_Blank"
-                   ,href="https://github.com/SIMOHANNANI/ACNet"),
+                   ,href="https://github.com/SIMOHANNANI/Racnet"),
                ),
              )
   ),
-
 
   # titlePanel("shiny "),
   sidebarLayout(
     sidebarPanel(h1("APRIORI INPUTS"),id="panelTitle"
                  ,hr(),
-                 numericInput("n", "Control the number of row to display", value = 5, min = 1, step = 1),
-                 hr()
+                 sliderInput("n", "Control the number of row to display", value = 5, min = 1, step = 1,max = 20),
+                 hr(),
+                 sliderInput("min_conf", h3("min-confidence"),
+                             min = 0, max = 1, value = 0.1,step = 0.1),
+                 hr(),
+                 sliderInput("min_supp", h3("min-support"),
+                             min = 0, max = 1, value = 0.1,step = 0.1),
                  ),
+                
                 
     
     mainPanel(
@@ -55,9 +61,9 @@ ui <- fluidPage(
 
                  ),
         tabPanel(title = "Viewing the data",icon = icon("eye"),
-                 mainPanel(tableOutput("Viewing_the_data"))),
+                 tableOutput("Viewing_the_data")),
         tabPanel(title = "visualizing the data",icon = icon("chart-bar"),
-                 tableOutput("visualizing_the_data"))
+                 plotOutput("visualizing_the_data",height = "460px"))
       )
     ),
   )
@@ -66,20 +72,45 @@ ui <- fluidPage(
 server <- function(input, output){
   data <- reactive({
     req(input$file)
-    
     ext <- tools::file_ext(input$file$name)
     switch(ext,
-           csv = vroom::vroom(input$file$datapath, delim = ","),
-           tsv = vroom::vroom(input$file$datapath, delim = "\t"),
+           csv = read.csv(input$file$datapath),
            validate("Invalid file; Please upload a .csv or .tsv file")
     )
   })
-  
   output$Viewing_the_data <- renderTable({
     head(data(), input$n)
   })
+  rules <- reactive({
+    head(read.csv(input$file$datapath), input$n)
+    transactions = read.transactions(file = file(input$file$datapath), format = "basket", sep = ",")
+    rules <- apriori(transactions, parameter=list(support=input$min_supp, confidence=input$min_conf))
+    return(rules)
+    
+  })
+  output$visualizing_the_data <- renderPlot({
+    plot(rules(), method="graph")
+  })
 }
+
 shinyApp(ui = ui, server = server)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 # library(shinydashboard)
 # # user interface :
