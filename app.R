@@ -84,11 +84,12 @@ ui <- fluidPage(
                                         sliderInput("cex", h3("control the size of points"), value = .5,
                                                     min = 0.1, step = .1,max = 2),
                                       ),
-                                      plotOutput("scatterChart",width = "80%",
-                                                            height = "294px"),
+                                      plotOutput("scatterChart",
+                                                 width = "80%",
+                                                            height = "294px")
                                      
                                       ),
-                             tabPanel("matrix visualization",plotOutput("matrixChart",
+                             tabPanel("matrix visualization",icon = icon("chart-pie"),plotOutput("matrixChart",
                                                                        height = "415px"))
                  )
         )
