@@ -37,7 +37,8 @@ ui <- fluidPage(
   sidebarLayout(
     sidebarPanel(h1("APRIORI INPUTS"),id="panelTitle"
                  ,hr(),
-                 sliderInput("visualization", h4("Control the number of row to display"), value = 5, min = 1, step = 1,max = 20),
+                 sliderInput("visualization", h4("Control the number of row to display"),
+                             value = 5, min = 1, step = 1,max = 20),
                  hr(),
                  sliderInput("min_conf", h4("min-confidence"),
                              min = 0, max = 1, value = 0.1,step = 0.1),
@@ -61,16 +62,23 @@ ui <- fluidPage(
 
                  ),
 
+        
         tabPanel(title = "Viewing the data",icon = icon("eye"),
                  tags$div(
                    sliderInput("toDisply", h3("Control the number of row to display"), value = 5,
                                min = 1, step = 1,max = 20),
-
                  ),
-                 
                  tableOutput("Viewing_the_data")),
+        
+        
         tabPanel(title = "visualizing the data",icon = icon("chart-bar"),
-                 plotOutput("visualizing_the_data",height = "460px"))
+                 tabsetPanel(id = "subTabPanel1", 
+                             tabPanel("graph visualization",plotOutput("visualizing_graph",
+                                                            height = "415px")),
+                             tabPanel("subTab12",plotOutput("visualizing_the_data",
+                                                            height = "415px"))
+                 ),
+                 )
       )
     ),
   )
@@ -93,9 +101,8 @@ server <- function(input, output){
     transactions = read.transactions(file = file(input$file$datapath), format = "basket", sep = ",")
     rules <- apriori(transactions, parameter=list(support=input$min_supp, confidence=input$min_conf))
     return(rules)
-    
   })
-  output$visualizing_the_data <- renderPlot({
+  output$visualizing_graph <- renderPlot({
     plot(rules(), method="graph")
   })
 }
