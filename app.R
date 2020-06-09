@@ -37,7 +37,7 @@ ui <- fluidPage(
   sidebarLayout(
     sidebarPanel(h1("APRIORI INPUTS"),id="panelTitle"
                  ,hr(),
-                 sliderInput("visualization", h4("Control the number of row to display"),
+                 sliderInput("visualization", h4("number of row"),
                              value = 5, min = 1, step = 1,max = 20),
                  hr(),
                  sliderInput("min_conf", h4("min-confidence"),
@@ -53,7 +53,7 @@ ui <- fluidPage(
       tabsetPanel(
         tabPanel(title = "Getting the data",icon = icon("database"),
                    tags$div(id="uploadFiles",
-                            fileInput("file", "Choose CSV File",
+                            fileInput("file", "Choose CSV File",width = "80%",
                                       multiple = TRUE,
                                       accept = c("text/csv",
                                                  "text/comma-separated-values,text/plain",
@@ -71,14 +71,27 @@ ui <- fluidPage(
                  tableOutput("Viewing_the_data")),
         
         
-        tabPanel(title = "visualizing the data",icon = icon("chart-bar"),
-                 tabsetPanel(id = "subTabPanel1", 
-                             tabPanel("graph visualization",plotOutput("visualizing_graph",
+        tabPanel(title = "visualizing the data",icon = icon("chart-area"),
+                 
+                 tabsetPanel(id = "subTabPanel1",
+                             tabPanel("item frequency visualization",icon = icon("signal"),plotOutput("frequencychart",
+                                                                                height = "415px"),
+                                      ),
+                             tabPanel("graph visualization",icon = icon("project-diagram"),plotOutput("graphChart",
                                                             height = "415px")),
-                             tabPanel("subTab12",plotOutput("visualizing_the_data",
-                                                            height = "415px"))
-                 ),
+                             tabPanel("scatter visualization",icon = icon("chart-line"),
+                                      tags$div(
+                                        sliderInput("cex", h3("control the size of points"), value = .5,
+                                                    min = 0.1, step = .1,max = 2),
+                                      ),
+                                      plotOutput("scatterChart",width = "80%",
+                                                            height = "294px"),
+                                     
+                                      ),
+                             tabPanel("matrix visualization",plotOutput("matrixChart",
+                                                                       height = "415px"))
                  )
+        )
       )
     ),
   )
@@ -102,124 +115,20 @@ server <- function(input, output){
     rules <- apriori(transactions, parameter=list(support=input$min_supp, confidence=input$min_conf))
     return(rules)
   })
-  output$visualizing_graph <- renderPlot({
-    plot(rules(), method="graph")
+  output$graphChart <- renderPlot({
+    plot(rules(), method="graph",)
+  })
+  output$scatterChart <- renderPlot({
+    plot(rules(),col  = rainbow(25), cex  = input$cex)
+  })
+  output$matrixChart <- renderPlot({
+    plot(rules(), method="matrix",)
+  })
+  output$frequencychart <-renderPlot({
+    transactions = read.transactions(file = file(input$file$datapath), format = "basket", sep = ",")
+    barplot(itemFrequency(transactions,type="absolute"))
   })
 }
 
+# run the application :
 shinyApp(ui = ui, server = server)
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-# library(shinydashboard)
-# # user interface :
-# 
-# ui <- dashboardPage(
-#   # dashboard header :
-#   dashboardHeader(title="Racnet"),
-#   # dashboard sidebar:
-#   dashboardSidebar(
-#     sidebarMenu(
-#       menuItem("Getting the data",tabName ="Getting_the_data" ,icon = icon("database")),
-#       menuItem("Viewing the data",tabName ="Viewing_the_data" ,icon = icon("eye")),
-#       menuItem("visualizing the data",tabName ="visualizing_the_data" ,icon = icon("chart-bar"))
-#       # menuItem("Dashboard", tabName = "dashboard", icon = icon("dashboard")),
-#       # menuItem("Widgets", tabName = "widgets", icon = icon("th"))
-#     )
-#   ),
-#   # dashboard body :
-#   dashboardBody(
-#     # tabItems(
-#     #   tabItem(
-#     #     tabName = "Getting_the_data",
-#     #     fluidRow(
-#     #       box(plotOutput("plot1", height = 250)),
-#     #       
-#     #       box(
-#     #         title = "Controls",
-#     #         sliderInput("slider", "Number of observations:", 1, 100, 50)
-#     #       )
-#     #     )
-#     #   ),
-#     #   tabItem(
-#     #     tabName = "Viewing_the_data",
-#     #     fluidRow(
-#     #       box(plotOutput("plot1", height = 250)),
-#     #       
-#     #       box(
-#     #         title = "Controls",
-#     #         sliderInput("slider", "Number of observations:", 1, 100, 50)
-#     #       )
-#     #     )
-#     #   ),
-#     #   tabItem(
-#     #     tabName = "visualizing_the_data",
-#     #     fluidRow(
-#     #       box(plotOutput("plot1", height = 250)),
-#     #       
-#     #       box(
-#     #         title = "Controls",
-#     #         sliderInput("slider", "Number of observations:", 1, 100, 50)
-#     #       )
-#     #     )
-#     #   ),
-#     # )
-#     tabItems(
-#       # First tab content
-#       tabItem(tabName = "Getting_the_data",
-#           fluidRow(
-#             box(
-#               fileInput("uplaodFile", "Upload Files:", multiple = T, 
-#                         accept = c(".xls", "text/csv", "text/comma-separated-values, text/plain", ".csv")),
-#               helpText(paste("Please upload a file.  Supported file types are:  .txt, .csv and .xls"))
-#             )
-#           )
-#       ),
-#       
-#       # Second tab content
-#       tabItem(
-#           tabName = "Viewing_the_data",
-#           mainPanel(
-#             tableOutput("Viewing_the_data")
-#           )
-#       ),
-#       tabItem(
-#         tabName = "visualizing_the_data",
-#         fluidRow(
-#           box(
-#             title = "Controls",
-#             sliderInput("slider", "Number of observations:", 1, 100, 50)
-#           )
-#           
-#         )
-#       )
-#     )
-#     
-#   )
-# )
-# 
-# # server logic:
-# server <- function (input,output){
-#   output$Viewing_the_data <- renderTable({
-#     req(input$uplaodFile)
-#     read.csv(input$uplaodFile$datapath)
-#     
-#   })
-# }
-# # running the app :
-# shinyApp(ui,server)
