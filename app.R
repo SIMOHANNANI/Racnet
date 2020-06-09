@@ -108,8 +108,9 @@ server <- function(input, output){
     )
   })
   output$Viewing_the_data <- renderTable({
+    
     head(data(), input$toDisply)
-  })
+  },spacing="s",bordered = TRUE)
   rules <- reactive({
     head(read.csv(input$file$datapath), input$visualization)
     transactions = read.transactions(file = file(input$file$datapath), format = "basket", sep = ",")
