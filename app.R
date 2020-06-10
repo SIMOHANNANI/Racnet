@@ -6,14 +6,14 @@ bs_theme_new(bootswatch = "sketchy")
 # loadingBar <- tags$div(class="progress progress-striped active",
 #                        tags$div(class="bar", style="width: 100%;"))
 # # Code for loading message
-# loadingMsg <- tags$div(class="modal", tabindex="-1", role="dialog", 
+# loadingMsg <- tags$div(class="modal", tabindex="-1", role="dialog",
 #                        "aria-labelledby"="myModalLabel", "aria-hidden"="true",
 #                        tags$div(class="modal-header",
 #                                 tags$h3(id="myModalHeader", "Loading...")),
 #                        tags$div(class="modal-footer",
 #                                 loadingBar))
 # # The conditional panel to show when shiny is busy
-# loadingPanel <- conditionalPanel(paste("input.goButton > 0 &&", 
+# loadingPanel <- conditionalPanel(paste("input.goButton > 0 &&",
 #                                        "$('html').hasClass('shiny-busy')"),
 #                                  loadingMsg)
 #------------------------------------------------------------
@@ -164,8 +164,80 @@ ui <- fluidPage(
         )),
       )
     ),
-    tabPanel("About", icon = icon("address-card", "fa-2x")),
-    tabPanel("Contact us",icon=icon("file-signature","fa-2x")),
+    # ------About tab------
+    tabPanel("About",
+             icon = icon("address-card", "fa-2x"),
+             shiny::HTML(
+               "
+      
+      <div class='header'>
+   <div class='header__bg'></div>
+   <h1 class='header__title'>Come code with us.</h1>
+</div>
+
+<div class='about'>
+   <div class='about__title'>
+      <h2 class='about__title--text'>Who we are?</h2>
+   </div>
+   <div class='about__text'>
+      <p class='about__text--content'>
+         Lorem ipsum dolor sit amet consectetur, adipisicing elit. Neque officiis impedit exercitationem aperiam culpa repudiandae, architecto fugiat cumque dignissimos perferendis rerum eum aliquid assumenda consequatur aspernatur accusantium adipisci rem quasi!
+         
+         <br>
+         
+         Lorem ipsum dolor sit amet consectetur adipisicing elit. Ex provident asperiores quisquam voluptatum dolorem. Hic animi asperiores quibusdam eum recusandae, similique obcaecati dolore, porro saepe consequuntur, ad reprehenderit voluptatibus voluptas!
+         
+         <br>
+         
+         Lorem ipsum dolor sit amet consectetur adipisicing elit. Iure, at qui quisquam sed maiores, rerum pariatur accusantium cum voluptates nihil ut aperiam nobis, suscipit dicta itaque obcaecati omnis culpa magnam.
+      </p>
+   </div>
+</div>
+      "
+             )
+             
+             ),
+    tabPanel(
+      "Contact us",
+      icon = icon("file-signature", "fa-2x"),
+      
+      shiny::HTML(
+        "
+        <div class='container mw-50' id='contact'>
+    			<div class='section-content'>
+    				 <div class='contact-image'>
+                <img src='img/launch.svg' alt='rocket_contact'/>
+            </div>
+            <h1 class='section-header'>Give us a shout</h1>
+    			</div>
+    			<div class='container'>
+    				<form  id='form_contact'>
+    					<div class='container'>
+    			  			<div class='form-group'>
+    			  				<label for='exampleInputUsername'>Your name</label>
+    					    	<input type='text' class='form-control' id='' placeholder=' Enter Your Name'>
+    				  		</div>
+    				  		<div class='form-group'>
+    					    	<label for='exampleInputEmail'>Email Address</label>
+    					    	<input type='email'' class='form-control' id='exampleInputEmail' placeholder=' Enter Your Email'>
+    					  	</div>
+    			  		</div>
+    			  		<div class='container'>
+    			  			<div class='form-group'>
+    			  				<label for ='description'>Message</label>
+    			  			 	<textarea  class='form-control' id='description' placeholder='Enter Your Message'></textarea>
+    			  			</div>
+    			  			<div>
+    			  				<button type='button' class='btn btn-default submit'><i class='fa fa-paper-plane' aria-hidden='true'></i>  Send Message</button>
+    			  			</div>
+    					</div>
+    				</form>
+    			</div>
+		  </div>
+                 "
+      ),
+      
+    ),
     tabPanel(div(
       id = "img-id",
       a(
@@ -182,7 +254,7 @@ ui <- fluidPage(
 )
 # define the server logic :
 server <- function(input, output) {
-  options(shiny.maxRequestSize=200*1024^2)
+  options(shiny.maxRequestSize = 200 * 1024 ^ 2)
   data <- reactive({
     req(input$file)
     ext <- tools::file_ext(input$file$name)

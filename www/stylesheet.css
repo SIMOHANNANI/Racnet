@@ -64,7 +64,6 @@
   margin: auto auto;
   
 }
-
 .tab-pane{
   text-align:center;
    height:100%;
@@ -76,10 +75,17 @@
    width: 100%;
   margin: auto auto;
 }
-
-
-
 #tableView{
   text-align:center;
   background-color:red;
 }
+
+/*------------------------------------------------------------*/
+.contact-image img{
+    width: 10%;
+    margin-top: .5%;
+}
+body {
+   background-color: #f2f2de;
+}
+
