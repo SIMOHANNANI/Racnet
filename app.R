@@ -1,7 +1,6 @@
 library(shiny)
 library(arulesViz, warn.conflicts = FALSE)
 library(bootstraplib)
-data(Groceries)
 bs_theme_new(bootswatch = "sketchy")
 #-------------------------------------------------------------
 # loadingBar <- tags$div(class="progress progress-striped active",
@@ -166,7 +165,7 @@ ui <- fluidPage(
       )
     ),
     tabPanel("About", icon = icon("address-card", "fa-2x")),
-    tabPanel("Contact us",icon=icon("file-signature","fa-2x"),),
+    tabPanel("Contact us",icon=icon("file-signature","fa-2x")),
     tabPanel(div(
       id = "img-id",
       a(
@@ -194,8 +193,7 @@ server <- function(input, output) {
     )
   })
   output$Viewing_the_data <- renderTable({
-    G <- as(Groceries, "transactions")
-    head(G, input$toDisply)
+    head(data(), input$toDisply)
   }, spacing = "s", bordered = TRUE)
   rules <- reactive({
     head(read.csv(input$file$datapath), input$visualization)
@@ -212,9 +210,8 @@ server <- function(input, output) {
               ))
     return(rules)
   })
-  
   output$graphChart <- renderPlot({
-      plot(rules(), method = "graph", )
+    plot(rules(), method = "graph", )
   })
   output$scatterChart <- renderPlot({
     plot(rules(), col  = rainbow(25), cex  = input$cex)
