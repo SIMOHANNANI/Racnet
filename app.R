@@ -1,6 +1,7 @@
 library(shiny)
 library(arulesViz, warn.conflicts = FALSE)
 library(bootstraplib)
+data(Groceries)
 bs_theme_new(bootswatch = "sketchy")
 #-------------------------------------------------------------
 # loadingBar <- tags$div(class="progress progress-striped active",
@@ -104,7 +105,7 @@ ui <- fluidPage(
           
           tabPanel(
             title = "Viewing the data",
-            style = "overflow:scroll; max-height: 460px",
+            style = "overflow:scroll; height: 464px",
             icon = icon("eye"),
             tags$div(sliderInput(
               "toDisply",
@@ -120,6 +121,7 @@ ui <- fluidPage(
           
           tabPanel(
             title = "visualizing the data",
+            style = "overflow:scroll; height: 464px",
             icon = icon("chart-area"),
             
             tabsetPanel(
@@ -164,7 +166,7 @@ ui <- fluidPage(
       )
     ),
     tabPanel("About", icon = icon("address-card", "fa-2x")),
-    tabPanel("Contact us",icon=icon("file-signature","fa-2x")),
+    tabPanel("Contact us",icon=icon("file-signature","fa-2x"),),
     tabPanel(div(
       id = "img-id",
       a(
@@ -181,6 +183,7 @@ ui <- fluidPage(
 )
 # define the server logic :
 server <- function(input, output) {
+  options(shiny.maxRequestSize=200*1024^2)
   data <- reactive({
     req(input$file)
     ext <- tools::file_ext(input$file$name)
@@ -191,7 +194,8 @@ server <- function(input, output) {
     )
   })
   output$Viewing_the_data <- renderTable({
-    head(data(), input$toDisply)
+    G <- as(Groceries, "transactions")
+    head(G, input$toDisply)
   }, spacing = "s", bordered = TRUE)
   rules <- reactive({
     head(read.csv(input$file$datapath), input$visualization)
@@ -208,8 +212,9 @@ server <- function(input, output) {
               ))
     return(rules)
   })
+  
   output$graphChart <- renderPlot({
-    plot(rules(), method = "graph", )
+      plot(rules(), method = "graph", )
   })
   output$scatterChart <- renderPlot({
     plot(rules(), col  = rainbow(25), cex  = input$cex)
