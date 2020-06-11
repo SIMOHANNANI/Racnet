@@ -20,19 +20,15 @@ bs_theme_new(bootswatch = "sketchy")
 shinyOptions(plot.autocolor=TRUE)
 # define the UI :
 ui <- fluidPage(
-
+  
   titlePanel(windowTitle = "Racnet",
              title = tags$head(
                tags$link(rel = "shortcut icon",
                          href = "img/favicon.png", )
              )),
   theme = 'stylesheet.css',
-  windowTitle = "NOAA",
-  title = tags$head(
-    tags$link(rel = "stylesheet",
-              href = "https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css",
-              type = "image/vnd.microsoft.icon")
-  ),
+  # the page title :
+  tags$head(tags$title("Racnet"),),
   bootstrap(),
   tags$div(class = "container"),
   ## Logo for my website :
