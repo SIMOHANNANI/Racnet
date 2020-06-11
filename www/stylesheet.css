@@ -106,3 +106,6 @@ body {
 #scatterChart{
   background-color:transparent
 }
+.tab-pane .active{
+  background-color:white;
+}

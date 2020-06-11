@@ -358,7 +358,7 @@ server <- function(input, output) {
   })
   output$matrixChart <- renderPlot({
     par(bg = "yellow")
-    plot(rules(), method = "matrix",cex = input$cex)
+    plot(rules(), method = "matrix",)
     
   })
   output$frequencychart <-  renderPlot({
@@ -368,7 +368,13 @@ server <- function(input, output) {
       sep = ","
     )
     minValue <- min(length(transactions),input$visualization)
-    barplot(itemFrequency(transactions[0:minValue],type = "absolute"),col="#fff95a")
+    barplot(itemFrequency(transactions[0:minValue],
+                          type = "absolute"),col="#fff95a",
+                          main="frequency per product",
+                          xlab="products",
+                          ylab="frequency",
+                          beside=TRUE
+            )
   })
 }
 
