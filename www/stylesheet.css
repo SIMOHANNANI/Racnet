@@ -88,4 +88,21 @@
 body {
    background-color: #f2f2de;
 }
+.active .fa-2x {
+  color:#44eae5;
+}
+*:focus{
+  outline: none;
+}
+.js-irs-0 .irs-single, .js-irs-0 .irs-bar-edge, .js-irs-0 .irs-bar {background: #fcac16}
+.js-irs-1 .irs-single, .js-irs-1 .irs-bar-edge, .js-irs-1 .irs-bar {background: #fcac16}
+.js-irs-2 .irs-single, .js-irs-2 .irs-bar-edge, .js-irs-2 .irs-bar {background: #fcac16}
+.js-irs-3 .irs-single, .js-irs-3 .irs-bar-edge, .js-irs-3 .irs-bar {background: #fcac16}
+.js-irs-4 .irs-single, .js-irs-4 .irs-bar-edge, .js-irs-4 .irs-bar {background: #fcac16}
 
+
+#matrixChart{
+  background-color:transparent}
+#scatterChart{
+  background-color:transparent
+}

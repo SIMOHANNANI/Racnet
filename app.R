@@ -17,12 +17,14 @@ bs_theme_new(bootswatch = "sketchy")
 #                                        "$('html').hasClass('shiny-busy')"),
 #                                  loadingMsg)
 #------------------------------------------------------------
+shinyOptions(plot.autocolor=TRUE)
 # define the UI :
 ui <- fluidPage(
+
   titlePanel(windowTitle = "Racnet",
              title = tags$head(
                tags$link(rel = "shortcut icon",
-                         href = "img/favicon.png",)
+                         href = "img/favicon.png", )
              )),
   theme = 'stylesheet.css',
   windowTitle = "NOAA",
@@ -113,7 +115,7 @@ ui <- fluidPage(
               min = 1,
               step = 1,
               max = 20
-            ),),
+            ), ),
             tableOutput("Viewing_the_data")
           ),
           
@@ -147,7 +149,7 @@ ui <- fluidPage(
                   min = 0.1,
                   step = .1,
                   max = 2
-                ),),
+                ), ),
                 plotOutput("scatterChart",
                            width = "80%",
                            height = "294px")
@@ -165,11 +167,12 @@ ui <- fluidPage(
       )
     ),
     # ------About tab------
-    tabPanel("About",
-             icon = icon("address-card", "fa-2x"),
-             shiny::HTML(
-               "
-      
+    tabPanel(
+      "About",
+      icon = icon("address-card", "fa-2x"),
+      shiny::HTML(
+        "
+
       <div class='header'>
    <div class='header__bg'></div>
    <h1 class='header__title'>Come code with us.</h1>
@@ -182,21 +185,21 @@ ui <- fluidPage(
    <div class='about__text'>
       <p class='about__text--content'>
          Lorem ipsum dolor sit amet consectetur, adipisicing elit. Neque officiis impedit exercitationem aperiam culpa repudiandae, architecto fugiat cumque dignissimos perferendis rerum eum aliquid assumenda consequatur aspernatur accusantium adipisci rem quasi!
-         
+
          <br>
-         
+
          Lorem ipsum dolor sit amet consectetur adipisicing elit. Ex provident asperiores quisquam voluptatum dolorem. Hic animi asperiores quibusdam eum recusandae, similique obcaecati dolore, porro saepe consequuntur, ad reprehenderit voluptatibus voluptas!
-         
+
          <br>
-         
+
          Lorem ipsum dolor sit amet consectetur adipisicing elit. Iure, at qui quisquam sed maiores, rerum pariatur accusantium cum voluptates nihil ut aperiam nobis, suscipit dicta itaque obcaecati omnis culpa magnam.
       </p>
    </div>
 </div>
       "
-             )
-             
-             ),
+      )
+      
+    ),
     tabPanel(
       "Contact us",
       icon = icon("file-signature", "fa-2x"),
@@ -246,7 +249,7 @@ ui <- fluidPage(
         ,
         href = "https://github.com/SIMOHANNANI/Racnet"
       ),
-    ),)
+    ), )
   ),
   
   # titlePanel("shiny "),
@@ -283,13 +286,16 @@ server <- function(input, output) {
     return(rules)
   })
   output$graphChart <- renderPlot({
-    plot(rules(), method = "graph", )
+    plot(rules(), method = "graph",)
   })
   output$scatterChart <- renderPlot({
+    adjustcolor("blanchedalmond",alpha.f = 0.3)
     plot(rules(), col  = rainbow(25), cex  = input$cex)
   })
   output$matrixChart <- renderPlot({
-    plot(rules(), method = "matrix", )
+    par(bg = "yellow")
+    plot(rules(), method = "matrix",cex = input$cex)
+    
   })
   output$frequencychart <- renderPlot({
     transactions = read.transactions(
