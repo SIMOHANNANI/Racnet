@@ -60,14 +60,14 @@ ui <- fluidPage(
             value = 5,
             min = 1,
             step = 1,
-            max = 20
+            max = 50
           ),
           hr(),
           sliderInput(
             "min_conf",
             h4("min-confidence"),
-            min = 0,
-            max = 1,
+            min = 0.0,
+            max = 1.0,
             value = 0.1,
             step = 0.1
           ),
@@ -75,8 +75,8 @@ ui <- fluidPage(
           sliderInput(
             "min_supp",
             h4("min-support"),
-            min = 0,
-            max = 1,
+            min = 0.0,
+            max = 1.0,
             value = 0.1,
             step = 0.1
           ),
@@ -114,7 +114,7 @@ ui <- fluidPage(
               value = 5,
               min = 1,
               step = 1,
-              max = 20
+              max = 50
             ), ),
             tableOutput("Viewing_the_data")
           ),
@@ -341,8 +341,13 @@ server <- function(input, output) {
       format = "basket",
       sep = ","
     )
+    minValue <- min(length(transactions),input$visualization)
+    
+    print("hello")
+    print(minValue)
+    
     rules <-
-      apriori(transactions,
+      apriori(transactions[0:minValue],
               parameter = list(
                 support = input$min_supp,
                 confidence = input$min_conf
@@ -350,14 +355,13 @@ server <- function(input, output) {
     return(rules)
   })
   output$graphChart <- renderPlot({
+    set.seed(42)
     plot(rules(), method = "graph",)
   })
   output$scatterChart <- renderPlot({
-    adjustcolor("blanchedalmond",alpha.f = 0.3)
     plot(rules(), col  = rainbow(25), cex  = input$cex)
   })
   output$matrixChart <- renderPlot({
-    par(bg = "yellow")
     plot(rules(), method = "matrix",)
     
   })
