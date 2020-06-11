@@ -361,13 +361,14 @@ server <- function(input, output) {
     plot(rules(), method = "matrix",cex = input$cex)
     
   })
-  output$frequencychart <- renderPlot({
+  output$frequencychart <-  renderPlot({
     transactions = read.transactions(
       file = file(input$file$datapath),
       format = "basket",
       sep = ","
     )
-    barplot(itemFrequency(transactions, type = "absolute"))
+    minValue <- min(length(transactions),input$visualization)
+    barplot(itemFrequency(transactions[0:minValue],type = "absolute"),col="#fff95a")
   })
 }
 
