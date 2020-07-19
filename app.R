@@ -62,8 +62,8 @@ ui <- fluidPage(
           sliderInput(
             "min_conf",
             h4("min-confidence"),
-            min = 0.0,
-            max = 1.0,
+            min = 0.1,
+            max = 0.9,
             value = 0.1,
             step = 0.1
           ),
@@ -71,8 +71,8 @@ ui <- fluidPage(
           sliderInput(
             "min_supp",
             h4("min-support"),
-            min = 0.0,
-            max = 1.0,
+            min = 0.1,
+            max = 0.9,
             value = 0.1,
             step = 0.1
           ),
@@ -104,14 +104,19 @@ ui <- fluidPage(
             title = "Viewing the data",
             style = "overflow:scroll; height: 464px",
             icon = icon("eye"),
-            tags$div(sliderInput(
-              "toDisply",
-              h3("Control the number of row to display"),
-              value = 5,
-              min = 1,
-              step = 1,
-              max = 50
-            ), ),
+           
+            conditionalPanel( condition = "output.nrows",
+                  tags$div(sliderInput(
+                    "toDisply",
+                    h3("Control the number of row to display"),
+                    value = 5,
+                    min = 1,
+                    step = 1,
+                    max = 50
+                  ),
+             ),
+            )
+            ,
             tableOutput("Viewing_the_data")
           ),
           
@@ -138,6 +143,7 @@ ui <- fluidPage(
               tabPanel(
                 "scatter visualization",
                 icon = icon("chart-line"),
+                conditionalPanel( condition = "output.nrows",
                 tags$div(sliderInput(
                   "cex",
                   h3("control the size of points"),
@@ -145,7 +151,7 @@ ui <- fluidPage(
                   min = 0.1,
                   step = .1,
                   max = 2
-                ), ),
+                ), ),),
                 plotOutput("scatterChart",
                            width = "80%",
                            height = "294px")
@@ -319,6 +325,7 @@ ui <- fluidPage(
 server <- function(input, output) {
   options(shiny.maxRequestSize = 200 * 1024 ^ 2)
   data <- reactive({
+    # if(is.null(input$files)) return(NULL)
     validate(
       need(input$file, "Please choose a data set")
     )
@@ -331,6 +338,14 @@ server <- function(input, output) {
       validate("Invalid file; Please upload a .csv or .tsv file")
     )
   })
+  
+  output$nrows <- reactive({
+    nrow(data())
+  })
+  
+  outputOptions(output, "nrows", suspendWhenHidden = FALSE)  
+  
+  
   output$Viewing_the_data <- renderTable({
     head(data(), input$toDisply)
   }, spacing = "s", bordered = TRUE)
@@ -338,7 +353,7 @@ server <- function(input, output) {
     validate(
       need(input$file, "Please choose a data set")
     )
-    head(read.csv(input$file$datapath), input$visualization)
+    # head(read.csv(input$file$datapath), input$visualization)
     transactions = read.transactions(
       file = file(input$file$datapath),
       format = "basket",
@@ -346,8 +361,7 @@ server <- function(input, output) {
     )
     minValue <- min(length(transactions),input$visualization)
     
-    print("hello")
-    print(minValue)
+    # print(minValue)
     
     rules <-
       apriori(transactions[0:minValue],
@@ -355,6 +369,7 @@ server <- function(input, output) {
                 support = input$min_supp,
                 confidence = input$min_conf
               ))
+    print(length(transactions[0:minValue]))
     return(rules)
   })
   output$graphChart <- renderPlot({
@@ -362,8 +377,23 @@ server <- function(input, output) {
       need(input$file, "Please choose a data set")
     )
     set.seed(42)
-    plot(rules(), method = "graph",)
+    # validate(
+    #   need(length(rules()) == 0, "zero rules")
+    # )
+      
+      tryCatch({
+        plot(rules(), method = "graph",)
+      })
+    error = function(condition){
+      print('there was an error')
+    }
+      
+
+    # else{
+    #   return "no found rules";
+    # }
   })
+  
   output$scatterChart <- renderPlot({
     plot(rules(), col  = rainbow(25), cex  = input$cex)
   })
