@@ -1,6 +1,8 @@
 library(shiny)
+library(shinycssloaders)
 library(arulesViz, warn.conflicts = FALSE)
 library(bootstraplib)
+library(DT)
 bs_theme_new(bootswatch = "sketchy")
 #-------------------------------------------------------------
 # loadingBar <- tags$div(class="progress progress-striped active",
@@ -17,19 +19,33 @@ bs_theme_new(bootswatch = "sketchy")
 #                                        "$('html').hasClass('shiny-busy')"),
 #                                  loadingMsg)
 #------------------------------------------------------------
+# Options for Spinner
+options(spinner.color="#f96f0c", spinner.color.background="#ffffff", spinner.size=0.6)
 shinyOptions(plot.autocolor=TRUE)
 # define the UI :
 ui <- fluidPage(
+  tags$script(src = "myscript.js"),
+  # shiny::HTML(
+  # "<div id='loader' class='center'></div>
+  # "),
   
   titlePanel(windowTitle = "Racnet",
-             title = tags$head(
-               tags$link(rel = "shortcut icon",
-                         href = "img/favicon.png", )
-             )),
+     title = tags$head(
+       tags$link(rel = "shortcut icon",
+                 href = "img/favicon.png", )
+   )),
   theme = 'stylesheet.css',
   # the page title :
   tags$head(tags$title("Racnet"),),
   bootstrap(),
+  tags$div(id='loader',class='center'),
+  # tag$div(
+  #   id='loader',class='center',
+  #   tag$div(class=''),
+  # 
+  # ),
+  # <div class="lds-roller"><div></div><div></div><div></div><div></div><div>
+  #   </div><div></div><div></div><div></div></div>
   tags$div(class = "container"),
   ## Logo for my website :
   navbarPage(
@@ -40,7 +56,6 @@ ui <- fluidPage(
         href = "https://racnet.shinyapps.io/racnet/"
       ),
     ),
-    
     tabPanel(
       "Home",
       icon = icon("home", "fa-2x"),
@@ -115,9 +130,8 @@ ui <- fluidPage(
                     max = 50
                   ),
              ),
-            )
-            ,
-            tableOutput("Viewing_the_data")
+            ),
+                withSpinner(tableOutput("Viewing_the_data"), type = 6),
           ),
           
           
@@ -125,23 +139,33 @@ ui <- fluidPage(
             title = "visualizing the data",
             style = "overflow:scroll; height: 464px",
             icon = icon("chart-area"),
+
             
             tabsetPanel(
               id = "subTabPanel1",
               tabPanel(
-                "item frequency visualization",
+                "item frequency ",
                 icon = icon("signal"),
-                plotOutput("frequencychart",
-                           height = "415px"),
+                
+                withSpinner(plotOutput("frequencychart",
+                                       height = "415px"), type = 6),
               ),
+            tabPanel(
+              "graph plot",
+              icon = icon("project-diagram"),
+              withSpinner(plotOutput("graphChart",
+                                     height = "415px"), type = 6),
+              
+            ),
               tabPanel(
-                "graph visualization",
+                "association rules",
                 icon = icon("project-diagram"),
-                plotOutput("graphChart",
-                           height = "415px")
+                # tableOutput("TBL")
+                withSpinner(DT::dataTableOutput("mytable"), type = 6),
+                
               ),
               tabPanel(
-                "scatter visualization",
+                "scatter plot",
                 icon = icon("chart-line"),
                 conditionalPanel( condition = "output.nrows",
                 tags$div(sliderInput(
@@ -152,16 +176,18 @@ ui <- fluidPage(
                   step = .1,
                   max = 2
                 ), ),),
-                plotOutput("scatterChart",
-                           width = "80%",
-                           height = "294px")
+                withSpinner(plotOutput("scatterChart",
+                                       width = "80%",
+                                       height = "294px"), type = 6),
+                
                 
               ),
               tabPanel(
-                "matrix visualization",
+                "matrix plot",
                 icon = icon("chart-pie"),
-                plotOutput("matrixChart",
-                           height = "415px")
+                withSpinner(plotOutput("matrixChart",
+                                       height = "415px"), type = 6),
+                
               )
             )
           )
@@ -169,6 +195,7 @@ ui <- fluidPage(
       )
     ),
     # ------About tab------
+    
     tabPanel(
       "About Us",
       icon = icon("address-card", "fa-2x"),
@@ -323,6 +350,18 @@ ui <- fluidPage(
 )
 # define the server logic :
 server <- function(input, output) {
+  rules2df <- function(rules, list=F){
+    df <- as(rules, 'data.frame')
+    df[,1] <- as.character(df[,1])
+    df$lhs <- sapply(df[,1], function(x) strsplit(x, split=' => ')[[1]][1])
+    df$rhs <- sapply(df[,1], function(x) strsplit(x, split=' => ')[[1]][2])
+    df$lhs <- gsub(pattern='\\{', replacement='', x=df$lhs)
+    df$lhs <- gsub(pattern='}', replacement='', x=df$lhs)
+    df$rhs <- gsub(pattern='\\{', replacement='', x=df$rhs)
+    df$rhs <- gsub(pattern='}', replacement='', x=df$rhs)
+    return(df)
+  }
+  
   options(shiny.maxRequestSize = 200 * 1024 ^ 2)
   data <- reactive({
     # if(is.null(input$files)) return(NULL)
@@ -346,7 +385,11 @@ server <- function(input, output) {
   outputOptions(output, "nrows", suspendWhenHidden = FALSE)  
   
   
+
+  
+  
   output$Viewing_the_data <- renderTable({
+    Sys.sleep(1) 
     head(data(), input$toDisply)
   }, spacing = "s", bordered = TRUE)
   rules <- reactive({
@@ -373,6 +416,7 @@ server <- function(input, output) {
     return(rules)
   })
   output$graphChart <- renderPlot({
+    Sys.sleep(2) 
     validate(
       need(input$file, "Please choose a data set")
     )
@@ -394,14 +438,33 @@ server <- function(input, output) {
     # }
   })
   
+  
+  
+  
+
+  # df <- rules2df(rules)
+  # output$TBL <- renderTable({
+  #   df()
+  # })
+  
+  output$mytable = DT::renderDataTable({
+    Sys.sleep(2) 
+   rules2df(rules())
+  })
+  
+  
+  
   output$scatterChart <- renderPlot({
+    Sys.sleep(2) 
     plot(rules(), col  = rainbow(25), cex  = input$cex)
   })
   output$matrixChart <- renderPlot({
+    Sys.sleep(2) 
     plot(rules(), method = "matrix",)
     
   })
   output$frequencychart <-  renderPlot({
+    Sys.sleep(2) 
     validate(
       need(input$file, "Please choose a data set")
     )
