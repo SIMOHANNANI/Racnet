@@ -319,7 +319,11 @@ ui <- fluidPage(
 server <- function(input, output) {
   options(shiny.maxRequestSize = 200 * 1024 ^ 2)
   data <- reactive({
-    req(input$file)
+    validate(
+      need(input$file, "Please choose a data set")
+    )
+    # req(input$file)
+    # validate(need(input$file, message = FALSE))
     ext <- tools::file_ext(input$file$name)
     switch(
       ext,
@@ -331,6 +335,9 @@ server <- function(input, output) {
     head(data(), input$toDisply)
   }, spacing = "s", bordered = TRUE)
   rules <- reactive({
+    validate(
+      need(input$file, "Please choose a data set")
+    )
     head(read.csv(input$file$datapath), input$visualization)
     transactions = read.transactions(
       file = file(input$file$datapath),
@@ -351,6 +358,9 @@ server <- function(input, output) {
     return(rules)
   })
   output$graphChart <- renderPlot({
+    validate(
+      need(input$file, "Please choose a data set")
+    )
     set.seed(42)
     plot(rules(), method = "graph",)
   })
@@ -362,6 +372,9 @@ server <- function(input, output) {
     
   })
   output$frequencychart <-  renderPlot({
+    validate(
+      need(input$file, "Please choose a data set")
+    )
     transactions = read.transactions(
       file = file(input$file$datapath),
       format = "basket",
