@@ -5,9 +5,9 @@ account: racnet
 server: shinyapps.io
 hostUrl: https://api.shinyapps.io/v1
 appId: 2421619
-bundleId: 3412062
+bundleId: 3412245
 url: https://racnet.shinyapps.io/racnet/
-when: 1595249461.46464
+when: 1595252613.32282
 asMultiple: FALSE
 asStatic: FALSE
 ignoredFiles: groceries.csv|GroceryStoreDataSet.csv|store_data.csv|transactions_by_dept.csv

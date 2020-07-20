@@ -12,7 +12,7 @@ shinyOptions(plot.autocolor=TRUE)
 # define the UI :
 ui <- fluidPage(
   tags$head(tags$script(src='http://code.jquery.com/jquery-3.5.1.min.js')),
-  tags$head(tags$script("$.noConflict(true);")),
+  # tags$head(tags$script("$.noConflict(true);")),
   tags$script(src = "myscript.js"),
   
   titlePanel(windowTitle = "Racnet",
@@ -54,6 +54,8 @@ ui <- fluidPage(
             step = 1,
             max = 50
           ),
+          bsTooltip("visualization", "you can choose whatever you want",
+                    "bottom", ),
           hr(),
           sliderInput(
             "min_conf",
@@ -134,27 +136,31 @@ ui <- fluidPage(
               tabPanel(
                 "graph plot",
                 icon = icon("project-diagram"),
+                uiOutput('err_graph'),
                 withSpinner(plotOutput("graphChart",
                                        height = "415px"), type = 6),
+                
                 
               ),
               tabPanel(
                 "association rules",
                 icon = icon("table"),
-                # tableOutput("TBL")
+                uiOutput('err_assoc'),
                 withSpinner(DT::dataTableOutput("mytable"), type = 6),
+                
                 
               ),
               tabPanel(
                 "scatter plot",
                 icon = icon("chart-line"),
+                uiOutput('err_scatter'),
                 conditionalPanel( condition = "output.nrows",
                                   tags$div(sliderInput(
                                     "cex",
                                     h3("control the size of points"),
-                                    value = .5,
-                                    min = 0.1,
-                                    step = .1,
+                                    value = 0.5,
+                                    min = 1,
+                                    step = 0.1,
                                     max = 2
                                   ), ),),
                 withSpinner(plotOutput("scatterChart",
@@ -166,6 +172,7 @@ ui <- fluidPage(
               tabPanel(
                 "matrix plot",
                 icon = icon("chart-pie"),
+                uiOutput('err_matrix'),
                 withSpinner(plotOutput("matrixChart",
                                        height = "415px"), type = 6),
                 
@@ -326,15 +333,21 @@ ui <- fluidPage(
 # define the server logic :
 server <- function(input, output) {
   rules2df <- function(rules, list=F){
-    df <- as(rules, 'data.frame')
-    df[,1] <- as.character(df[,1])
-    df$lhs <- sapply(df[,1], function(x) strsplit(x, split=' => ')[[1]][1])
-    df$rhs <- sapply(df[,1], function(x) strsplit(x, split=' => ')[[1]][2])
-    df$lhs <- gsub(pattern='\\{', replacement='', x=df$lhs)
-    df$lhs <- gsub(pattern='}', replacement='', x=df$lhs)
-    df$rhs <- gsub(pattern='\\{', replacement='', x=df$rhs)
-    df$rhs <- gsub(pattern='}', replacement='', x=df$rhs)
-    return(df)
+    if(length(rules) != 0){
+      df <- as(rules, 'data.frame')
+      df[,1] <- as.character(df[,1])
+      df$lhs <- sapply(df[,1], function(x) strsplit(x, split=' => ')[[1]][1])
+      df$rhs <- sapply(df[,1], function(x) strsplit(x, split=' => ')[[1]][2])
+      df$lhs <- gsub(pattern='\\{', replacement='', x=df$lhs)
+      df$lhs <- gsub(pattern='}', replacement='', x=df$lhs)
+      df$rhs <- gsub(pattern='\\{', replacement='', x=df$rhs)
+      df$rhs <- gsub(pattern='}', replacement='', x=df$rhs)
+      return(df)
+    }
+    else{
+      return (NULL)
+    }
+
   }
   
   options(shiny.maxRequestSize = 200 * 1024 ^ 2)
@@ -378,7 +391,7 @@ server <- function(input, output) {
                 support = input$min_supp,
                 confidence = input$min_conf
               ))
-    print(length(transactions[0:minValue]))
+    # print(length(transactions[0:minValue]))
     return(rules)
   })
   output$graphChart <- renderPlot({
@@ -387,33 +400,61 @@ server <- function(input, output) {
       need(input$file, "Please choose a data set")
     )
     set.seed(42)
-    # validate(
-    #   need(length(rules()) == 0, "zero rules")
-    # )
-    
-    tryCatch({
-      plot(rules(), method = "graph",)
-    })
-    error = function(condition){
-      print('there was an error')
-    }
+    tryCatch(
+      plot(rules(), method = "graph"),
+      output$err_graph <- renderUI(shiny::HTML('<div class="err_center"><div>')),
+      error = function(e){
+        output$err_graph <- renderUI(
+          shiny::HTML('
+            <div class="err_center">No association rules to be plotted ... please change the parameters<div>
+          '),
+        )
+      })
     
   })
   
   output$mytable = DT::renderDataTable({
     Sys.sleep(2) 
-    rules2df(rules())
+    tryCatch(
+      rules2df(rules()),
+      error = function(e){
+        output$mytable <- renderUI(shiny::HTML('<div class="err_center"><div>'))
+        output$err_assoc <- renderUI(
+          shiny::HTML('
+            <div class="err_center">No association rules to be plotted ... please change the parameters<div>
+          '),
+        )
+      }
+    )
   })
-  
-  
+
   
   output$scatterChart <- renderPlot({
     Sys.sleep(1) 
-    plot(rules(), col  = rainbow(25), cex  = input$cex)
+    tryCatch(plot(rules(), col  = rainbow(25), cex  = input$cex),
+       output$err_scatter <- renderUI(shiny::HTML('<div class="err_center"><div>')),
+       error = function(e){
+         output$err_scatter <- renderUI(
+           shiny::HTML('
+        <div class="err_center">No association rules to be plotted ... please change the parameters<div>
+      '),
+         )
+       }
+       
+    )
+    
   })
   output$matrixChart <- renderPlot({
     Sys.sleep(1) 
-    plot(rules(), method = "matrix",)
+    tryCatch(plot(rules(), method = "matrix",),
+    output$err_matrix <- renderUI(shiny::HTML('<div class="err_center"><div>')),
+    error = function(e){
+      output$err_matrix <- renderUI(
+        shiny::HTML('
+        <div class="err_center">No association rules to be plotted ... please change the parameters<div>
+      '),
+      )
+    })
     
   })
   output$frequencychart <-  renderPlot({
@@ -438,4 +479,38 @@ server <- function(input, output) {
 }
 
 # run the application :
+# 
+# 
+# library(shinydashboard)
+# library(shinyBS)
+# 
+# ui <- dashboardPage(
+#   dashboardHeader(title = 'Title', disable = TRUE),
+# 
+#   dashboardSidebar(),
+# 
+#   dashboardBody(
+#     sliderInput(
+#     "visualization",
+#     h4("number of row"),
+#     value = 5,
+#     min = 1,
+#     step = 1,
+#     max = 50
+#     ),
+# 
+#     bsPopover("visualization", "you can choose whatever you want",
+#               "bottom", ),
+#   )
+# )
+# 
+# server <- function(input, output, session) {
+# 
+#   output$TestBox <- renderValueBox({
+#     valueBox( value = "50 %",
+#               subtitle="Test",
+#               color = "black")
+#   })
+# 
+# }
 shinyApp(ui = ui, server = server)
