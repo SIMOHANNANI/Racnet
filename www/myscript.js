@@ -1,4 +1,5 @@
-
+$("body").css('background-color',"#2c302d");
+$("body").css('visibility',  "hidden");  
 function sleep (time) {
   return new Promise((resolve) => setTimeout(resolve, time));
 }
@@ -7,7 +8,6 @@ document.onreadystatechange =  function() {
         $("body").css('background-color',"#2c302d");
         $("#panelTitle").css('display',  "none");
         $("body").css('visibility',  "hidden");  
- 
         $("#loader").css('visibility',  "visible"); 
         $("#loader").css("background-image", "https://cdn.dribbble.com/users/634508/screenshots/2172083/ebookdribbble7.gif");
     }
