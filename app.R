@@ -3,6 +3,7 @@ library(shinycssloaders)
 library(arulesViz, warn.conflicts = FALSE)
 library(bootstraplib)
 library(DT)
+library(shinyjqui)
 bs_theme_new(bootswatch = "sketchy")
 #-------------------------------------------------------------
 # loadingBar <- tags$div(class="progress progress-striped active",
@@ -38,7 +39,11 @@ ui <- fluidPage(
   # the page title :
   tags$head(tags$title("Racnet"),),
   bootstrap(),
-  tags$div(id='loader',class='center'),
+  # tags$div(id='loader',class='center'),
+  shiny::HTML('
+  <div id = "loader" class="center"><div></div><div></div><div></div></div>
+  '),
+  
   # tag$div(
   #   id='loader',class='center',
   #   tag$div(class=''),
