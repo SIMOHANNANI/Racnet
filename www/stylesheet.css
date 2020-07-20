@@ -110,44 +110,6 @@
   background-color:white;
 }
 
-
-/*
-#loader { 
-    border: 2px solid #f3f3f3; 
-    border-radius: 50%; 
-    border-top: 5px solid #444444; 
-    width: 70px; 
-    height: 70px; 
-//animation: spin 5s linear infinite;
-    animation-name: spin;
-    animation-duration: 5s;
-    animation-iteration-count: infinite;
-    animation-direction: linear;
-    z-index:10000;
-} 
-*/
-  
-  
-  
-  
-  
-/*  #loader { 
-    border: 2px solid #f3f3f3; 
-    border-radius: 50%; 
-    border-top: 5px solid #444444; 
-    width: 70px; 
-    height: 70px; 
-    animation: spin 5s linear infinite;*
-    animation-name: spin;
-    animation-duration: 5s;
-    animation-iteration-count: infinite;
-    animation-direction: linear;
-
-} */
-
-
-
-
 #loader {
 /*  background-image:url('https://cdn.dribbble.com/users/634508/screenshots/2172083/ebookdribbble7.gif');*/
   display: inline-block;

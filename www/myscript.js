@@ -24,33 +24,6 @@ document.onreadystatechange =  function() {
 }; 
 document.querySelector("body").style.backgroundColor = "#f2f2de"; 
 
-/*function sleep (time) {
-  return new Promise((resolve) => setTimeout(resolve, time));
-}
-document.onreadystatechange =  function() {
-    if (document.readyState !== "complete") { 
-
-        document.querySelector("body").style.visibility = "hidden";
-        document.getElementById("panelTitle").style.display = 'none'; 
-        document.querySelector("#loader").style.visibility = "visible";
-
-        
-        sleep(2000).then(() => {
-          if (document.readyState == "complete") { 
-            document.getElementById("panelTitle").style.display = 'block'; 
-            document.querySelector("#loader").style.visibility = "hidden"; 
-            document.querySelector("body").style.visibility = "visible"; 
-
-          }
-        });
-         
-    }
-}; 
-
-document.querySelector("body").style.backgroundColor = "#f2f2de"; */
-
-
-
 
 
 
