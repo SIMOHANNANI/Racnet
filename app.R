@@ -25,7 +25,6 @@ options(spinner.color="#f96f0c", spinner.color.background="#ffffff", spinner.siz
 shinyOptions(plot.autocolor=TRUE)
 # define the UI :
 ui <- fluidPage(
-  tags$script(src = "myscript.js"),
   # shiny::HTML(
   # "<div id='loader' class='center'></div>
   # "),
@@ -164,7 +163,7 @@ ui <- fluidPage(
               ),
               tabPanel(
                 "association rules",
-                icon = icon("project-diagram"),
+                icon = icon("table"),
                 # tableOutput("TBL")
                 withSpinner(DT::dataTableOutput("mytable"), type = 6),
                 
@@ -347,7 +346,9 @@ ui <- fluidPage(
   ),
   
   # titlePanel("shiny "),
-  
+  tags$head(tags$script(src='http://code.jquery.com/jquery-2.1.4.js')),
+  tags$head(tags$script("$.noConflict(true);")),
+  tags$script(src = "myscript.js"),
 )
 # define the server logic :
 server <- function(input, output) {
