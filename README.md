@@ -9,8 +9,8 @@ Web application using shiny to gain association rules using Aproiri algorithm wi
 
 <div><mark><b>NOTE:</b></mark> Feel free to fork that repository ,PR are welcom as well ,and give us a shot if you like the project by starring it .</div>
 
-
-<img src='interface/interface_gross/full_screen_interface.png' height='200px' width=auto/>
+</br>
+<img src='interface/interface_gross/full_screen_interface.png'/>
 
 
 **<p style='color:red'>1. Getting the data :</p>**
