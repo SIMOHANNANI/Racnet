@@ -5,9 +5,9 @@
 # Racnet : 
 
 Web application using shiny to gain association rules using Aproiri algorithm within a transactional database.
-
-<img src='interface/fruit.png'/>
-
+<div class='container'>
+<img src='interface/fruit.png' class='mx-auto d-block'/>
+</div>
 
 <div><mark>
 <b>NOTE:</b></mark>
