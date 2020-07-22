@@ -12,7 +12,7 @@ shinyOptions(plot.autocolor=TRUE)
 # define the UI :
 ui <- fluidPage(
   tags$head(tags$script(src='http://code.jquery.com/jquery-3.5.1.min.js')),
-  # tags$head(tags$script("$.noConflict(true);")),
+  tags$head(tags$script("$.noConflict(true);")),
   tags$script(src = "myscript.js"),
   
   titlePanel(windowTitle = "Racnet",
@@ -54,8 +54,8 @@ ui <- fluidPage(
             step = 1,
             max = 50
           ),
-          bsTooltip("visualization", "you can choose whatever you want",
-                    "bottom", ),
+          # bsTooltip("visualization", "you can choose whatever you want",
+          #           "bottom", ),
           hr(),
           sliderInput(
             "min_conf",
