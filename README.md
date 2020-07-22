@@ -1,14 +1,17 @@
 <head>
 <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css" integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous">
 </head>
+
 # Racnet : 
+
 Web application using shiny to gain association rules using Aproiri algorithm within a transactional database.
 
 
-* NOTE : Feel free to fork that repository ,PR are welcom as well ,and give us a shot if you like the project by starring it .
+<div><mark><b>NOTE:</b></mark> Feel free to fork that repository ,PR are welcom as well ,and give us a shot if you like the project by starring it .</div>
 
 
-![](interface/interface_gross/full_screen_interface.png)
+<img src='interface/interface_gross/full_screen_interface.png' height='200px' width=auto/>
+
 
 **<p style='color:red'>1. Getting the data :</p>**
 <p class="ml-5">
