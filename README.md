@@ -49,3 +49,4 @@ The Apriori algorithm generates association rules for a given data set. An assoc
 </table>
 
 <img src='interface/interface_gross/full_screen_interface.png'/>
+
